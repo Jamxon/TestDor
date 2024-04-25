@@ -50,8 +50,7 @@ class MainController extends Controller
             $model->course = $studentData['course'];
             $model->save();
         }
-
-        if (auth('student')->attempt(['loginId' => $request->studentID, 'passportNumber' => $request->PassportNumber])) {
+        if (Auth::guard('student')->attempt(['loginId' => $request->studentID, 'passportNumber' => $request->PassportNumber])) {
             $user = Auth::guard('student')->user();
             $token = $user->createToken('authToken')->accessToken;
             return response()->json(['token' => $token, 'user' => $user]);

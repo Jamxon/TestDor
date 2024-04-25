@@ -26,6 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:student')->group(function (){
+    Route::get('/student',[\App\Http\Controllers\StudentController::class,'index']);
+});
+
 Route::middleware('auth:api')->group(function () {
     Route::get('mains', [MainController::class, 'index']);
     Route::post('quizze/create', [QuizController::class,'create']);
@@ -49,7 +53,5 @@ Route::middleware('auth:api')->group(function () {
 
 Route::get('getdata',[UserController::class,'getsubjects']);
 Route::get('/generate-pdf/{id}', [\App\Http\Controllers\Api\PDFController::class,'generatePDF']);
-Route::post('teacher/register',[\App\Http\Controllers\Api\UserController::class, 'create']);
-Route::post('teacher/login',[UserAuthController::class, 'login']);
-//Route::get('login', [MainController::class,'index'])->name('login');
-Route::post('student/login', [MainController::class,'login']);
+Route::post('register',[\App\Http\Controllers\Api\UserController::class, 'create']);
+Route::post('login',[UserAuthController::class, 'login']);
