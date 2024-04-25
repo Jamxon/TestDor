@@ -46,7 +46,7 @@ return [
         ],
         'student' => [
             'driver' => 'passport',
-            'provider' => 'students'
+            'provider' => 'student'
         ]
     ],
 
@@ -72,7 +72,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'students' => [
+        'student' => [
             'driver' => 'eloquent',
             'model' => App\Models\Student::class,
         ]

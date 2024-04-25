@@ -51,15 +51,16 @@ class MainController extends Controller
             $model->save();
         }
 
-        $user = Student::where('loginId' , $request->stundentID)->first();
-
-        if (Auth::guard('student')->check(['loginId' => $request->studentID, 'passportNumber' => $request->PassportNumber])) {
-            $user = Auth::guard('student')->user(); // Autentifikatsiya muvaffaqiyatli bo'lsa foydalanuvchi obyektini olish
+        if (auth('student')->attempt(['loginId' => $request->studentID, 'passportNumber' => $request->PassportNumber])) {
+            $user = Auth::guard('student')->user();
             $token = $user->createToken('authToken')->accessToken;
             return response()->json(['token' => $token, 'user' => $user]);
         } else {
-            return response()->json(['error' => 'Invalid loginId or password'], 401);
+            return response()->json(['error' => 'Invalid loginId or passport number'], 401);
         }
+
+
+
 
 
 //        if ($request->PassportNumber == $studentData['passportNumber']) {

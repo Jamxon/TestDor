@@ -10,6 +10,8 @@ class Student extends Authenticatable
 {
     use HasApiTokens,HasFactory;
 
+    protected $guard = 'student';
+
     protected $fillable = [
         'loginId',
         'name',
@@ -18,6 +20,7 @@ class Student extends Authenticatable
         'course',
     ];
 
+    protected $primaryKey = 'loginId';
     public function getStudentAnswers()
     {
         return $this->hasMany(StudentAnswer::class,'student_id','loginId');
