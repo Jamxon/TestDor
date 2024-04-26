@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateQuizRequest;
 use App\Http\Resources\QuizIndexResource;
 use App\Http\Resources\QuizShowResource;
 use App\Models\Answer;
+use App\Models\Department;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,20 @@ class QuizController extends Controller
     public function index()
     {
         $quizzes = Auth::user()->getQuizes()->with('department', 'course', 'user', 'subject', 'questions')->get();
+
+        $quizzeResource = QuizIndexResource::collection($quizzes);
+
+        return response()->json($quizzeResource);
+
+    }
+
+    public function studentQuiz()
+    {
+        $data = [
+            'dep_id' => Auth::user()->getUserDepartments()->get()->first()->department_id,
+            'course_id' => Auth::user()->course,
+        ];
+        $quizzes = Quiz::where(['dep_id'=> $data['dep_id'], 'course_id'=> $data['course_id']])->get();
 
         $quizzeResource = QuizIndexResource::collection($quizzes);
 

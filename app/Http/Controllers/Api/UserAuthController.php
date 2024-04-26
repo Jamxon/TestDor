@@ -20,7 +20,7 @@ class UserAuthController extends Controller
         $user = new User();
         $user->loginId = $request->loginId;
         $user->name = $request->name;
-        $user->phone = $request->phone;
+        $user->phone = $request->phone ?? null;
         $user->password = Hash::make($request->password);
         $user->save();
 
@@ -30,8 +30,14 @@ class UserAuthController extends Controller
             foreach ($request->subjects as $subject){
                 $user_subject = new UserSubject();
                 $user_subject->user_id = $user->id;
-                $user_subject->subject = $subject;
+                $user_subject->subject_id = $subject;
                 $user_subject->save();
+            }
+            foreach ($request->departments as $department){
+                $userDepartment = new UserDepartment();
+                $userDepartment->user_id = $user->id;
+                $userDepartment->department_id = $department;
+                $userDepartment->save();
             }
         }
 
@@ -63,7 +69,7 @@ class UserAuthController extends Controller
 
             $upperPassportNumber = strtoupper($student[13]);
             $studentData['name'] = trim($student[4]);
-            $studentData['faculty'] = $this->getTextAfterSlash($student[7]);
+            $studentData['code'] = $this->getTextAfterSlash($student[7]);
             $studentData['passportNumber'] = trim($upperPassportNumber);
             $studentData['studentID'] = $request->loginId;
             $studentData['course'] = $this->getNextNumberAfterSlash($student[22]);
@@ -85,8 +91,10 @@ class UserAuthController extends Controller
                 }else{
                     $model->image = 'default.jpg';
                 }
+                $facultyCode = $studentData['code'];
+
                 if ($model->save()){
-                    $userDepartment = Department::where('name_uz', $studentData['faculty'])->first();
+                    $userDepartment = Department::where('code', '=', $facultyCode)->first();
                     $department = new UserDepartment();
                     $department->department_id = $userDepartment->id;
                     $department->user_id = $model->id;
@@ -128,10 +136,10 @@ class UserAuthController extends Controller
     private function getTextAfterSlash($string)
     {
         $part = trim($string);
-        $parts = explode('/', $part);
-
-        array_shift($parts);
-
-        return implode('/', $parts);
+        $parts = explode('-', $part);
+        return $parts[0];
+//        array_shift($parts);
+//
+//        return implode('/', $parts);
     }
 }

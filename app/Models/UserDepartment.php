@@ -12,6 +12,7 @@ class UserDepartment extends Model
     protected $table = 'user_departments';
 
     protected $fillable = [
+        'id',
         'user_id',
         'department_id',
     ];

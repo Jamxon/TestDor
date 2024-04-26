@@ -42,6 +42,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('teachers',[\App\Http\Controllers\Api\UserController::class, 'index']);
     Route::get('quizze/{id}',[QuizController::class, 'show']);
     Route::post('quizze/update/{id}', [QuizController::class, 'update']);
+    Route::get('student/quizze',[QuizController::class,'studentQuiz']);
     Route::post('question/create', [QuestionController::class,'create']);
     Route::post('question/delete/{id}', [QuestionController::class, 'destroy']);
     Route::get('questions', [QuestionController::class, 'index']);

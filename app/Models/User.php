@@ -19,8 +19,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
         'password',
+        'course'
     ];
 
     /**
@@ -47,7 +49,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserDepartment::class, 'user_id');
     }
-    public function getQuestions() 
+    public function getQuestions()
     {
         return $this->belongsTo(Question::class);
     }
