@@ -20,7 +20,7 @@ class StudentAnswer extends Model
 
     public function Student()
     {
-        return $this->belongsTo(Student::class,'student_id','loginId');
+        return $this->belongsTo(User::class,'student_id','loginId');
     }
     public function question()
     {

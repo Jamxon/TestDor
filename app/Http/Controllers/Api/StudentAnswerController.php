@@ -26,6 +26,14 @@ class StudentAnswerController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+//     student_id = user.loginId
+//     quiz_id = quiz.id
+//     question_id = question.id
+//     if(question.type == 1){
+//            answer = text
+//     else {
+//            answer_id = answer.id
     public function create(Request $request)
     {
         $studentAnswer = new StudentAnswer();

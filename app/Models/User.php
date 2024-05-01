@@ -20,7 +20,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id',
+        'loginId',
         'name',
+        'phone',
         'password',
         'course'
     ];
@@ -52,5 +54,9 @@ class User extends Authenticatable
     public function getQuestions()
     {
         return $this->belongsTo(Question::class);
+    }
+    public function getStudentAnswers()
+    {
+        return $this->hasMany(StudentAnswer::class,'student_id','loginId');
     }
 }
