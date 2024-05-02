@@ -22,7 +22,6 @@ class QuizController extends Controller
     public function index()
     {
         $quizzes = Auth::user()->getQuizes()->with('department', 'course', 'user', 'subject', 'questions')->get();
-
         $quizzeResource = QuizIndexResource::collection($quizzes);
 
         return response()->json($quizzeResource);
@@ -34,9 +33,20 @@ class QuizController extends Controller
         $data = [
             'dep_id' => Auth::user()->getUserDepartments()->get()->first()->department_id,
             'course_id' => Auth::user()->course,
+            'studentAnswers' => Auth::user()->getStudentAnswers()->get(),
         ];
+        $studentAnswers = Auth::user()->getStudentAnswers()->get();
+
+
         $quizzes = Quiz::where(['dep_id'=> $data['dep_id'], 'course_id'=> $data['course_id']])->get();
 
+        foreach ($quizzes as $quiz){
+            if ($studentAnswers->where('quiz_id', $quiz->id)->count() > 0){
+                $quiz['status'] = true;
+            }else {
+                $quiz['status'] = false;
+            }
+        }
         $quizzeResource = QuizIndexResource::collection($quizzes);
 
         return response()->json($quizzeResource);

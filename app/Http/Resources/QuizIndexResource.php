@@ -24,6 +24,7 @@ class QuizIndexResource extends JsonResource
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'questions' => $this->questions,
+            'status' => $this->status,
         ];
     }
 }
