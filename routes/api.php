@@ -55,4 +55,4 @@ Route::middleware('auth:api')->group(function () {
 Route::get('getdata',[UserController::class,'getsubjects']);
 Route::get('/generate-pdf/{id}', [\App\Http\Controllers\Api\PDFController::class,'generatePDF']);
 Route::post('register',[\App\Http\Controllers\Api\UserController::class, 'create']);
-Route::post('login',[UserAuthController::class, 'login']);
+Route::post('login',[UserAuthController::class, 'login']); 

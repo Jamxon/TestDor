@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudentAnswerRequest;
-use App\Http\Requests\UpdateStudentAnswerRequest;
 use App\Http\Resources\StudentAnswerResource;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\User;
 use App\Models\Student;
 use App\Models\StudentAnswer;
 use Illuminate\Http\Request;
@@ -45,7 +45,7 @@ class StudentAnswerController extends Controller
             $studentAnswer->answer = $request->answer;
             $studentAnswer->answer_id = null;
             $studentAnswer->score = null;
-        }else{
+        }elseif($type->is_close != 1){
             $studentAnswer->answer = null;
             $studentAnswer->answer_id = $request->answer_id;
             $answer = Answer::find($request->answer_id);
@@ -90,7 +90,7 @@ class StudentAnswerController extends Controller
     public function getStudents($id)
     {
         $quiz = Quiz::find($id);
-        $students = Student::where('course',$quiz->course_id)->get();
+        $students = User::where('course',$quiz->course_id)->get();
         return $students;
     }
 
@@ -117,7 +117,12 @@ class StudentAnswerController extends Controller
 
         if ($studentAnswer) {
             $studentAnswer->score = $score;
-            $studentAnswer->save();
+            if ($studentAnswer->save()){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Score updated successfully'
+                ]);
+            }
         }
     }
 
@@ -128,4 +133,18 @@ class StudentAnswerController extends Controller
     {
         //
     }
+
+//    public function bot($method,$datas=[])
+//    {
+//        $url = "https://api.telegram.org/bot".API_KEY."/".$method;
+//        $ch = curl_init();
+//        curl_setopt($ch,CURLOPT_URL,$url);
+//        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+//        curl_setopt($ch,CURLOPT_POSTFIELDS,$datas);
+//        $res = curl_exec($ch);
+//        if(curl_error($ch))
+//            return curl_error($ch);
+//        else
+//            return json_decode($res);
+//    }
 }
