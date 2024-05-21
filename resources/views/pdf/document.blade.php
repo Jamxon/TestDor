@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bunyodbek Abdurazzaqov</title>
+    <title>KIUF QUIZ</title>
     <style>
         body {
             margin: 0;
@@ -134,7 +134,7 @@
         bildirmaslikka va ushbu fan bo’yicha nazorat bahoim “0” ga tenglashtirilishiga roziman.
         <div>
             <div class="rule-l">
-                Talaba imzosi :………………..
+                Talaba imzosi :_______________
             </div>
             <div class="rule-r">
                 Sana: 22.03.2024
@@ -151,12 +151,16 @@
         <div class="question">
             <div class="question-text">
                 {{ $data->question->question }}
+
+                    {{ $data->question->score}}
+                ball
             </div>
         <div class="answer">
             <table class="answers">
                 <?php
 
                 $i = 1;
+                $true = 0;
                 foreach ($data->question->answers as $answer){
                     ?>
 
@@ -164,6 +168,7 @@
                     <td <?php
                         if($data->answer_id == $answer->id){
                             echo 'class="correct"';
+                            $true +=  $data->question->score;
                         }
                             ?>>
                         {{ $i }}
@@ -180,12 +185,15 @@
                 }?>
             </table>
 
+
         </div>
 
             <?php
         }
         ?>
-
+            <div class="true">
+                To'g'ri javoblar: {{ $true }} ball
+            </div>
         </div><!----question end-->
 
 

@@ -14,14 +14,15 @@ use Illuminate\Http\Request;
 
 class PDFController extends Controller
 {
-    public function generatePDF($id)
+    public function generatePDF($id, $studentid)
     {
         $quiz = Quiz::find($id);
-        $students = Student::where('course',$quiz->course_id)->get();
+        $student = User::where(['loginId' => $studentid])->first();
         $data = [];
-        foreach ($students as $student) {
-            $data['studentAnswers'] = $student->getStudentAnswers()->get();
-            $data['studentDepartment'] = $student->faculty;
+        $foo = $student->getUserDepartments()->with('department')->get();
+        $foo1 = $foo->pluck('department');
+            $data['studentAnswers'] = $student->getStudentAnswers()->get()->reverse();
+            $data['studentDepartment'] = $foo1[0]->name_uz; ;
             $data['studentSubject'] = $quiz->subject->name;
             $data['studentId'] = $student->loginId;
             $data['studentGuruh'] = $student->course;
@@ -33,8 +34,45 @@ class PDFController extends Controller
             }
             $pdf = PDF::loadView('pdf.document',['data'=>$data]);
             return  $pdf->download($data['studentName']);
-        }
-        return $data;
-
     }
+    public function generateQuizPDF($quizId)
+    {
+        $quiz = Quiz::find($quizId);
+        if (!$quiz) {
+            return response()->json(['error' => 'Quiz not found'], 404);
+        }
+
+        // Fetch unique users who participated in the quiz
+        $studentAnswers = StudentAnswer::where('quiz_id', $quizId)
+            ->with(['user.department'])
+            ->get()
+            ->groupBy('student_id');
+
+        $pdfDataList = [];
+        foreach ($studentAnswers as $userId => $answers) {
+            $user = $answers->first()->user;
+            $department = $user->department;
+            $data = [
+                'studentAnswers' => $answers->reverse(),
+                'studentDepartment' => $department ? $department->name_uz : 'No Department',
+                'studentSubject' => $quiz->subject->name,
+                'studentId' => $user->loginId,
+                'studentGuruh' => $user->course,
+                'studentName' => $user->name,
+                'quizType' => $quiz->type == 1 ? "yakuniy" : "oraliq",
+            ];
+
+            $pdf = PDF::loadView('pdf.document', ['data' => $data]);
+            $pdfContent = $pdf->output();
+            $pdfBase64 = base64_encode($pdfContent);
+
+            $pdfDataList[] = [
+                'studentName' => $user->name,
+                'pdfBase64' => $pdfBase64,
+            ];
+        }
+
+        return response()->json($pdfDataList);
+    }
+
 }

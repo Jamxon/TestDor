@@ -34,4 +34,8 @@ class StudentAnswer extends Model
     {
         return $this->belongsTo(Answer::class,'answer_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class,'student_id','loginId');
+    }
 }
